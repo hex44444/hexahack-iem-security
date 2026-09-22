@@ -1,0 +1,13 @@
+[
+  {
+    "username": "4detrail",
+    "password": "$2a$10$ix3co7SgDp7rCtG/9TuwYOYsAjmAyYjt55rnHUE.N/VLJchIapX3.",
+    "created_at": "2026-04-27T07:52:42.099Z"
+  },
+  {
+    "username": "admin",
+    "password": "$2a$10$Dk9eUTb.wUyuDGkXuEFzju7MjG6GrUtX9MsK6H8Wni0Ypj846kyPS",
+    "created_at": "2026-04-30T12:07:15.696Z",
+    "isAdmin": true
+  }
+]
