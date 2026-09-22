@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>⚡ IAIM SECURE | ENCRYPTED CHAT v9.0 ⚡</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0c12;
+            font-family: 'Inter', 'Segoe UI', 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== PROFESSIONAL GRADIENT BACKGROUND ===== */
+        .bg-pro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: radial-gradient(ellipse at 20% 30%, #0f172a 0%, #020617 100%);
+        }
+
+        .bg-pro::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg, rgba(0,255,255,0.02) 0px, rgba(0,255,255,0.02) 2px, transparent 2px, transparent 8px);
+            pointer-events: none;
+        }
+
+        .bg-pro::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(0,150,255,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* ===== SPLASH SCREEN ===== */
+        .splash-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #020617;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: clip-path 1s cubic-bezier(0.77, 0, 0.18, 1);
+            clip-path: circle(150% at 50% 50%);
+        }
+
+        .splash-close {
+            clip-path: circle(0% at 50% 50%) !important;
+        }
+
+        .splash-content {
+            text-align: center;
+            z-index: 10;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .splash-content pre {
+            color: #38bdf8;
+            font-size: 0.65rem;
+            line-height: 1.2;
+            text-shadow: 0 0 20px #38bdf8;
+        }
+
+        .splash-progress {
+            margin-top: 2rem;
+            width: 300px;
+            text-align: center;
+        }
+
+        .splash-progress-bar {
+            width: 100%;
+            height: 2px;
+            background: rgba(56, 189, 248, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .splash-progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .splash-status {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            letter-spacing: 2px;
+            font-family: monospace;
+        }
+
+        /* ===== MAIN APP ===== */
+        .main-app {
+            opacity: 0;
+            transform: scale(0.98);
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            width: 100%;
+            max-width: 1480px;
+            margin: 20px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .main-app.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ===== MODERN CARD ===== */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 28px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(56, 189, 248, 0.15);
+        }
+
+        .ascii-head pre {
+            color: #38bdf8;
+            font-size: 0.55rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 1rem 0;
+            color: #e2e8f0;
+            letter-spacing: 3px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+
+        .input-label {
+            color: #94a3b8;
+            font-weight: 500;
+            min-width: 100px;
+            font-size: 0.85rem;
+        }
+
+        .modern-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+            padding: 0.75rem 1.2rem;
+            border-radius: 16px;
+            color: #f1f5f9;
+            font-family: monospace;
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 200px;
+            transition: all 0.2s;
+        }
+
+        .modern-input:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .modern-input::placeholder {
+            color: #475569;
+        }
+
+        .btn {
+            border: none;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            padding: 0.65rem 1.5rem;
+            margin: 0.2rem;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3a5f, #0f2a4a);
+            border-color: #38bdf8;
+            color: #f1f5f9;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #2a4a7a, #1a3a5a);
+            box-shadow: 0 5px 20px rgba(56, 189, 248, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #3f1e1e, #2f0f0f);
+            border-color: #ef4444;
+            color: #fca5a5;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #5a2a2a, #4a1a1a);
+            box-shadow: 0 5px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .chat-container {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            padding: 1rem;
+            height: 420px;
+            overflow-y: auto;
+            margin: 1rem 0;
+            border: 1px solid #1e293b;
+        }
+
+        .chat-container::-webkit-scrollbar { width: 5px; }
+        .chat-container::-webkit-scrollbar-track { background: #0f172a; border-radius: 5px; }
+        .chat-container::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 5px; }
+
+        .message {
+            padding: 0.75rem;
+            border-left: 3px solid #38bdf8;
+            margin: 0.5rem 0;
+            background: rgba(56, 189, 248, 0.05);
+            border-radius: 12px;
+            transition: all 0.2s;
+            cursor: context-menu;
+        }
+
+        .message:hover {
+            background: rgba(56, 189, 248, 0.1);
+            transform: translateX(4px);
+        }
+
+        .msg-time { color: #64748b; font-size: 0.7rem; margin-right: 12px; }
+        .msg-user { 
+            color: #38bdf8; 
+            font-weight: 600; 
+            margin-right: 10px;
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-underline-offset: 4px;
+        }
+        .msg-user:hover { color: #7dd3fc; }
+        .msg-text { color: #cbd5e1; word-break: break-word; }
+        .msg-role-badge {
+            background: rgba(56, 189, 248, 0.2);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 8px;
+            display: inline-block;
+        }
+
+        .room-list {
+            max-height: 220px;
+            overflow-y: auto;
+            margin-top: 0.8rem;
+        }
+
+        .room-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 0.6rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 40px;
+            border-left: 3px solid #38bdf8;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .room-item:hover { background: rgba(56, 189, 248, 0.15); transform: translateX(5px); }
+        
+        .room-info { flex: 1; cursor: pointer; color: #cbd5e1; }
+        .room-info strong { color: #38bdf8; }
+        
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.2s;
+        }
+        
+        .delete-btn:hover { background: #ef4444; color: #fff; transform: scale(1.02); }
+
+        .status-badge {
+            background: rgba(56, 189, 248, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            text-align: center;
+            margin: 0.8rem 0;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        hr { border-color: #1e293b; margin: 1rem 0; }
+
+        /* ===== PROFIL KARTI ===== */
+        .profile-card {
+            position: fixed;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid #38bdf8;
+            border-radius: 20px;
+            padding: 1.2rem;
+            min-width: 260px;
+            z-index: 10001;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            animation: fadeInScale 0.2s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .profile-card h4 {
+            color: #38bdf8;
+            margin-bottom: 0.8rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 0.5rem;
+        }
+
+        .profile-card p {
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            margin: 0.5rem 0;
+        }
+
+        .profile-card select, .profile-card button {
+            margin-top: 0.8rem;
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            cursor: pointer;
+        }
+
+        .profile-card select:hover, .profile-card button:hover {
+            border-color: #38bdf8;
+        }
+
+        .profile-card .close-card {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 1.2rem;
+        }
+
+        .profile-card .close-card:hover { color: #ef4444; }
+
+        /* ===== ONLINE INDICATOR ===== */
+        .online-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #22c55e;
+            margin-left: 6px;
+            box-shadow: 0 0 5px #22c55e;
+        }
+
+        .offline-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #64748b;
+            margin-left: 6px;
+        }
+
+        @media (max-width: 680px) {
+            .glass-card { padding: 1rem; }
+            .input-group { flex-direction: column; align-items: stretch; }
+            .input-label { min-width: auto; }
+            .ascii-head pre { font-size: 0.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-pro"></div>
+
+    <!-- PROFESSIONAL SPLASH SCREEN -->
+    <div id="splashOverlay" class="splash-overlay">
+        <div class="splash-content">
+            <pre>
+╔════════════════════════════════════════════════════════════════════╗
+║  ██╗  ██╗███████╗██╗  ██╗ █████╗ ██╗  ██╗ █████╗  ██████╗██╗  ██╗  ║
+║  ██║  ██║██╔════╝╚██╗██╔╝██╔══██╗██║  ██║██╔══██╗██╔════╝██║ ██╔╝  ║
+║  ███████║█████╗   ╚███╔╝ ███████║███████║███████║██║     █████╔╝   ║
+║  ██╔══██║██╔══╝   ██╔██╗ ██╔══██║██╔══██║██╔══██║██║     ██╔═██╗   ║
+║  ██║  ██║███████╗██╔╝ ██╗██║  ██║██║  ██║██║  ██║╚██████╗██║  ██╗  ║
+║  ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝  ║
+║                     IAIM SECURE COMMUNICATIONS v9.0                ║
+║          ══ ADMIN PANEL • ROLE SYSTEM • PROFILE CARD ══            ║
+╚════════════════════════════════════════════════════════════════════╝
+            </pre>
+            <pre>
+⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀
+⢻⢷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣾⡇
+⢸⠀⠻⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣤⢤⣶⠶⠶⢶⣶⡤⣤⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⠋⢀⠇
+⠈⣇⠀⠈⠻⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡴⠞⠋⢉⡴⠞⠋⣿⠀⠀⠀⡯⠙⠳⣦⡉⠙⠲⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⠟⠁⠀⣼⠀
+⠀⠹⣆⠀⠀⠈⠛⢦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠞⠋⠀⢀⣰⠏⠀⠀⠀⢻⡄⠀⢰⠇⠀⠀⠈⢻⣄⠀⠀⠙⢷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡶⠋⠁⠀⠀⣰⠃⠀
+⠀⠀⠹⣇⠀⠀⠀⠀⠉⠳⢦⣄⡀⠀⠀⠀⢀⡾⠃⠀⣠⠞⠋⠁⠀⠀⠀⠀⠀⠉⠉⠉⠀⠀⠀⠀⠀⠉⠙⢷⣄⠀⠙⢧⡀⠀⠀⠀⢀⣠⡶⠛⠁⠀⠀⠀⠀⣴⠃⠀⠀
+⠀⠀⠀⠙⢧⡀⠀⠀⠀⠀⠀⠈⠙⠳⠶⢤⣿⣄⣀⣸⠋⢠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠀⢹⣆⣀⣨⣷⡤⠶⠚⠋⠁⠀⠀⠀⠀⠀⢠⡾⠃⠀⠀⠀
+⠀⠀⠀⠀⠈⠻⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⡇⠈⡇⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⣼⠀⣼⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⠏⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠈⠻⢦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠀⣧⠀⠀⠀⠀⠀⠀⠀⣷⠀⠀⠀⠀⠀⠀⠀⡟⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡴⠛⠁⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠳⣦⣀⠀⠀⠀⠀⠀⠀⢀⡟⠀⡏⠀⠀⠀⠀⠀⠀⢀⣿⠀⠀⠀⠀⠀⠀⠀⣿⠀⢿⡀⠀⠀⠀⠀⠀⠀⣠⡴⠞⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⡆⠉⢻⡶⢤⣀⡀⢀⡾⠁⣼⠃⠀⠀⠀⠀⠀⠀⣸⠹⣆⠀⠀⠀⠀⠀⠀⠹⣆⠘⢧⡀⢀⣠⡤⢶⡟⠉⢰⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⡏⣧⠀⢸⠃⠀⣨⠿⠋⣠⠞⠁⠀⠀⠀⠀⠀⠀⢸⡏⠀⣹⡆⠀⠀⠀⠀⠀⠀⠘⢦⣈⠛⢿⡅⠀⢸⡇⠀⡿⢻⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡕⣿⣧⣸⡀⠀⠛⡶⢶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⣹⠰⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠶⣾⠃⠀⢸⣇⡼⡿⢸⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣇⠘⢯⡙⠷⣄⣸⠇⠀⠹⣆⠀⠀⠀⠀⠀⠀⠀⣴⠃⠀⠹⣄⠀⠀⠀⠀⠀⠀⢀⣼⠃⠀⢹⣆⣠⠞⣫⡿⠁⣼⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣄⢀⠙⢷⡘⣿⣷⡶⣄⠙⠷⣄⡀⠀⠀⠀⠘⠁⠀⠀⠀⠈⠃⠀⠀⠀⢀⣴⠞⢁⣤⢶⣾⡿⢡⡾⠋⡀⣰⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣿⠀⠸⣇⠈⣻⣷⣿⠳⣤⡈⠙⠓⠄⠀⠈⠳⡄⠀⣰⠛⠁⠀⠠⠞⠋⢀⣴⠟⣇⣿⡟⠀⣾⠀⠀⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡄⠀⠻⣾⠏⠸⣿⣦⡈⠛⠶⢤⣤⣤⣤⠴⡷⠶⣿⠦⣤⣤⣤⡤⠾⠋⢁⣼⣿⠁⠹⣶⠏⠀⢰⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢷⣄⠀⣿⠀⠀⠘⠿⣿⣦⣤⢴⣿⡿⠃⠀⡷⠛⣦⠀⠘⢿⣷⠦⣤⣶⣿⠟⠁⠀⢀⡿⢀⣰⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣷⠘⣷⣄⠀⠀⠀⠉⠉⠉⠁⠀⠀⠀⡇⠀⡟⠀⠀⠀⠉⠉⠉⠉⠀⠀⠀⣠⣾⠁⡟⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣴⡏⢹⢷⣦⣄⡀⠀⣀⣤⡤⢤⡀⡧⠀⠇⢀⡤⢤⣤⡀⠀⣀⣠⣴⣿⡏⢻⣼⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠈⣧⢸⡾⠁⣨⣿⡟⠙⢯⣀⠀⠀⠀⠀⠀⠀⢀⣀⡿⠉⢻⢿⡁⠘⣿⠃⡿⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⡓⠶⠶⠿⡛⠥⠞⠉⢠⣿⣄⡀⠉⠉⠻⣦⣀⡴⠛⠉⠉⢀⣴⣿⡀⠙⠲⠬⣻⠷⠶⠶⢚⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠦⣄⣀⣀⣀⣠⣴⡋⢻⣿⡛⢳⠒⣤⠼⣿⠧⣤⢲⡞⢻⣿⠋⢹⡦⣄⣀⣀⣀⣤⠔⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠹⣆⠈⠛⣾⣿⣧⣿⠙⠛⠓⠛⠚⠛⢋⣇⡾⣿⣷⠋⠀⣼⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣷⡀⣿⣿⣆⠙⠃⠀⠀⠀⠀⠀⠘⠋⣼⡿⣿⢠⡾⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⡿⣮⡙⠛⣟⣻⣯⣯⣽⣟⣿⠛⢋⣴⣷⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣼⣏⠛⣋⣤⠶⠒⠶⣤⣙⠛⣹⢰⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣧⡉⠉⠉⠀⣠⣤⡄⠀⠉⠉⢁⣼⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠲⠤⠞⠋⠀⠙⠶⠤⠖⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+            </pre>
+        </div>
+        <div class="splash-progress">
+            <div class="splash-progress-bar">
+                <div class="splash-progress-fill" id="progressFill"></div>
+            </div>
+            <div class="splash-status" id="splashStatus">Initializing secure core...</div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="mainApp" class="main-app">
+        <div class="glass-card">
+            <div class="ascii-head">
+                <pre>
+╔════════════════════════════════════════════════════════════════════╗
+║  ██╗  ██╗███████╗██╗  ██╗ █████╗ ██╗  ██╗ █████╗  ██████╗██╗  ██╗  ║
+║  ██║  ██║██╔════╝╚██╗██╔╝██╔══██╗██║  ██║██╔══██╗██╔════╝██║ ██╔╝  ║
+║  ███████║█████╗   ╚███╔╝ ███████║███████║███████║██║     █████╔╝   ║
+║  ██╔══██║██╔══╝   ██╔██╗ ██╔══██║██╔══██║██╔══██║██║     ██╔═██╗   ║
+║  ██║  ██║███████╗██╔╝ ██╗██║  ██║██║  ██║██║  ██║╚██████╗██║  ██╗  ║
+║  ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝  ║
+╚════════════════════════════════════════════════════════════════════╝
+                </pre>
+            </div>
+
+            <!-- LOGIN PANEL -->
+            <div id="loginPanel">
+                <div class="input-group">
+                    <span class="input-label">┌─[IAIM]</span>
+                    <span class="input-label">└─ USER →</span>
+                    <input type="text" id="loginUsername" class="modern-input" placeholder="username" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <span class="input-label">└─ PWD →</span>
+                    <input type="password" id="loginPassword" class="modern-input" placeholder="••••••••">
+                </div>
+                <div style="display: flex; justify-content: center; gap: 15px; margin-top: 28px;">
+                    <button id="loginBtn" class="btn btn-primary">🔐 LOGIN</button>
+                    <button id="registerBtn" class="btn">📝 REGISTER</button>
+                </div>
+                <div class="status-badge" style="margin-top: 1rem;">👑 Admin: admin / HeXaHack2026!</div>
+            </div>
+
+            <!-- CHAT PANEL -->
+            <div id="chatPanel" style="display: none;">
+                <div class="section-title">✦ ACTIVE SESSION ✦</div>
+                <div id="roomStatus" class="status-badge">🌀 NOT CONNECTED</div>
+                <div id="userRoleBadge" class="status-badge" style="background: rgba(168, 85, 247, 0.1);"></div>
+
+                <hr>
+
+                <div class="input-group">
+                    <input type="text" id="newRoomName" class="modern-input" placeholder="🏠 Room name">
+                    <input type="text" id="newRoomPass" class="modern-input" placeholder="🔒 Password (optional)">
+                    <button id="createRoomBtn" class="btn btn-primary">✨ CREATE</button>
+                </div>
+                
+                <div class="input-group">
+                    <input type="text" id="joinRoomCode" class="modern-input" placeholder="🔑 Room code (#XYZ12)">
+                    <input type="text" id="joinRoomPass" class="modern-input" placeholder="🔒 Room password">
+                    <button id="joinRoomBtn" class="btn">🚪 JOIN</button>
+                    <button id="listRoomsBtn" class="btn">📋 LIST</button>
+                    <button id="leaveRoomBtn" class="btn btn-danger">🚪 LEAVE</button>
+                </div>
+                
+                <div id="roomListContainer" class="room-list" style="display: none;"></div>
+
+                <div id="chatMessages" class="chat-container">
+                    <div class="message">
+                        <span class="msg-time">[SYS]</span>
+                        <span class="msg-text">⚡ IAIM SECURE CHAT READY</span>
+                    </div>
+                    <div class="message">
+                        <span class="msg-time">[SYS]</span>
+                        <span class="msg-text">🔒 Kullanıcı adına tıklayarak profil kartını açın</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="messageInput" class="modern-input" placeholder="Your message..." style="flex:3;" autocomplete="off">
+                    <button id="sendMsgBtn" class="btn btn-primary">📡 SEND</button>
+                    <button id="logoutBtn" class="btn">🚪 EXIT</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null, token = null, currentRoom = null, msgInterval = null;
+        let currentUserRole = null;
+        let audioEnabled = false;
+        let activeProfileCard = null;
+
+        // ========== AUDIO SYSTEM ==========
+        let audioCtx = null;
+        
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            audioEnabled = true;
+        }
+
+        function playSound(type) {
+            if (!audioEnabled || !audioCtx) return;
+            try {
+                const gain = audioCtx.createGain();
+                const osc = audioCtx.createOscillator();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                let freq = 440;
+                let duration = 0.15;
+                let gainVal = 0.1;
+                
+                switch(type) {
+                    case 'send': freq = 880; duration = 0.1; gainVal = 0.12; break;
+                    case 'receive': freq = 660; duration = 0.12; gainVal = 0.1; break;
+                    case 'success': freq = 523.25; duration = 0.2; gainVal = 0.15; setTimeout(() => { osc.frequency.value = 659.25; }, 100); break;
+                    case 'error': freq = 220; duration = 0.25; gainVal = 0.15; osc.type = 'sawtooth'; break;
+                    case 'login': freq = 440; duration = 0.08; gainVal = 0.12; break;
+                    default: freq = 440;
+                }
+                
+                osc.frequency.value = freq;
+                gain.gain.value = gainVal;
+                osc.type = 'sine';
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        document.body.addEventListener('click', function enableAudio() {
+            initAudio();
+            document.body.removeEventListener('click', enableAudio);
+        }, { once: true });
+
+        // ========== SPLASH ==========
+        const splashDiv = document.getElementById('splashOverlay');
+        const splashStatus = document.getElementById('splashStatus');
+        const progressFill = document.getElementById('progressFill');
+        const steps = [
+            { text: "Initializing secure core...", progress: 20 },
+            { text: "Loading encryption modules...", progress: 40 },
+            { text: "Establishing secure channel...", progress: 60 },
+            { text: "AFK watchdog active...", progress: 80 },
+            { text: "System ready.", progress: 100 }
+        ];
+        
+        let stepIndex = 0;
+        const stepInterval = setInterval(() => {
+            if (stepIndex < steps.length) {
+                splashStatus.textContent = steps[stepIndex].text;
+                progressFill.style.width = steps[stepIndex].progress + '%';
+                stepIndex++;
+            } else {
+                clearInterval(stepInterval);
+                setTimeout(() => {
+                    splashDiv.classList.add('splash-close');
+                    setTimeout(() => {
+                        splashDiv.style.display = 'none';
+                        document.getElementById('mainApp').classList.add('visible');
+                    }, 800);
+                }, 500);
+            }
+        }, 400);
+
+        // ========== API ==========
+        async function apiCall(url, data) {
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                return await res.json();
+            } catch(e) { return { error: 'Connection error' }; }
+        }
+
+        // ========== ROL ISLEMLERI ==========
+        async function getUserRole() {
+            if (!currentRoom || !currentUser) return 'user';
+            const res = await apiCall('/user_roles', { username: currentUser, room_code: currentRoom, token });
+            return res.role || 'user';
+        }
+
+        async function assignRole(targetUser, role) {
+            const res = await apiCall('/assign_role', {
+                username: currentUser,
+                targetUsername: targetUser,
+                role: role,
+                room_code: currentRoom,
+                token
+            });
+            if (res.success) {
+                playSound('success');
+                alert(res.message);
+                updateUserRoleBadge();
+            } else {
+                playSound('error');
+                alert('❌ ' + (res.error || 'Rol atanamadı!'));
+            }
+        }
+
+        async function removeRole(targetUser) {
+            const res = await apiCall('/remove_role', {
+                username: currentUser,
+                targetUsername: targetUser,
+                room_code: currentRoom,
+                token
+            });
+            if (res.success) {
+                playSound('success');
+                alert(res.message);
+                updateUserRoleBadge();
+            } else {
+                playSound('error');
+                alert('❌ ' + (res.error || 'Rol kaldırılamadı!'));
+            }
+        }
+
+        async function updateUserRoleBadge() {
+            const role = await getUserRole();
+            currentUserRole = role;
+            const roleNames = { admin: '👑 Admin', room_creator: '👑 Oda Kurucusu', moderator: '🛡️ Moderator', vip: '💎 VIP', user: '👤 Normal Kullanıcı' };
+            document.getElementById('userRoleBadge').innerHTML = `🎭 Rolünüz: ${roleNames[role] || role}`;
+        }
+
+        // ========== PROFIL KARTI ==========
+        function closeProfileCard() {
+            if (activeProfileCard) {
+                activeProfileCard.remove();
+                activeProfileCard = null;
+            }
+        }
+
+        async function showUserProfileCard(username, x, y) {
+            closeProfileCard();
+            
+            const roomUsersRes = await apiCall('/room_users', { room_code: currentRoom, token });
+            const targetUserInfo = roomUsersRes.find(u => u.username === username);
+            const targetRole = targetUserInfo?.role || 'user';
+            const isOnline = targetUserInfo?.isOnline || false;
+            
+            const canAssignRole = currentUserRole === 'admin' || currentUserRole === 'room_creator';
+            const isSelf = username === currentUser;
+            
+            const card = document.createElement('div');
+            card.className = 'profile-card';
+            card.style.left = Math.min(x + 10, window.innerWidth - 280) + 'px';
+            card.style.top = Math.min(y + 10, window.innerHeight - 300) + 'px';
+            
+            const roleNames = { admin: '👑 Admin', room_creator: '👑 Kurucu', moderator: '🛡️ Moderatör', vip: '💎 VIP', user: '👤 Kullanıcı' };
+            
+            card.innerHTML = `
+                <span class="close-card" onclick="closeProfileCard()">✕</span>
+                <h4>@${escapeHtml(username)} ${isOnline ? '<span class="online-dot"></span>' : '<span class="offline-dot"></span>'}</h4>
+                <p>🎭 Rol: ${roleNames[targetRole] || targetRole}</p>
+                <p>🆔 Kullanıcı Adı: ${escapeHtml(username)}</p>
+                ${!isSelf && canAssignRole ? `
+                    <hr style="margin: 10px 0;">
+                    <select id="roleSelect">
+                        <option value="moderator" ${targetRole === 'moderator' ? 'selected' : ''}>🛡️ Moderatör</option>
+                        <option value="vip" ${targetRole === 'vip' ? 'selected' : ''}>💎 VIP</option>
+                        <option value="user" ${targetRole === 'user' ? 'selected' : ''}>👤 Kullanıcı</option>
+                    </select>
+                    <button id="assignRoleBtn">✅ Rol Ata</button>
+                    ${targetRole !== 'admin' && targetRole !== 'room_creator' && targetRole !== 'user' ? `<button id="removeRoleBtn" style="background:#3f1e1e; border-color:#ef4444;">🗑️ Rolü Kaldır</button>` : ''}
+                ` : ''}
+                ${isSelf ? `<p style="margin-top:10px;">✨ Bu sizin profiliniz</p>` : ''}
+            `;
+            
+            document.body.appendChild(card);
+            activeProfileCard = card;
+            
+            if (!isSelf && canAssignRole) {
+                document.getElementById('assignRoleBtn')?.addEventListener('click', async () => {
+                    const newRole = document.getElementById('roleSelect').value;
+                    await assignRole(username, newRole);
+                    closeProfileCard();
+                });
+                document.getElementById('removeRoleBtn')?.addEventListener('click', async () => {
+                    await removeRole(username);
+                    closeProfileCard();
+                });
+            }
+            
+            setTimeout(() => {
+                document.addEventListener('click', function onOutsideClick(e) {
+                    if (!card.contains(e.target)) {
+                        closeProfileCard();
+                        document.removeEventListener('click', onOutsideClick);
+                    }
+                });
+            }, 10);
+        }
+
+        // ========== AUTH ==========
+        document.getElementById('registerBtn').onclick = async () => {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            if (!username || !password) { playSound('error'); alert("❌ Kullanıcı adı ve şifre gerekli!"); return; }
+            const res = await apiCall('/register', { username, password });
+            if (res.success) { 
+                playSound('success');
+                alert("✅ Kayıt başarılı! Giriş yapabilirsiniz."); 
+            } else { 
+                playSound('error');
+                alert("❌ " + (res.error || "Kayıt başarısız")); 
+            }
+        };
+
+        document.getElementById('loginBtn').onclick = async () => {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            if (!username || !password) { playSound('error'); alert("❌ Kullanıcı adı ve şifre gerekli!"); return; }
+            const res = await apiCall('/login', { username, password });
+            if (res.token) {
+                currentUser = res.username; token = res.token;
+                document.getElementById('loginPanel').style.display = 'none';
+                document.getElementById('chatPanel').style.display = 'block';
+                playSound('success');
+                await refreshCurrentRoom();
+                await updateUserRoleBadge();
+                if (msgInterval) clearInterval(msgInterval);
+                msgInterval = setInterval(loadMessages, 3000);
+                setInterval(() => apiCall('/update_activity', { username: currentUser, token }), 25000);
+            } else { 
+                playSound('error');
+                alert("❌ " + (res.error || "Giriş başarısız")); 
+            }
+        };
+
+        async function refreshCurrentRoom() {
+            const data = await apiCall('/current_room', { username: currentUser, token });
+            if (data.room_code) {
+                currentRoom = data.room_code;
+                document.getElementById('roomStatus').innerHTML = `🔷 AKTİF ODA: ${currentRoom} | 🔒 ŞİFRELİ 🔷`;
+                await loadMessages();
+                await updateUserRoleBadge();
+            } else {
+                document.getElementById('roomStatus').innerHTML = "⚡ ODA YOK - OLUŞTUR VEYA KATIL ⚡";
+                currentRoom = null;
+            }
+        }
+
+        async function createRoom() {
+            const name = document.getElementById('newRoomName').value.trim();
+            const pass = document.getElementById('newRoomPass').value;
+            if (!name) { playSound('error'); alert("❌ Oda adı girin!"); return; }
+            const res = await apiCall('/create_room', { username: currentUser, room_name: name, room_password: pass || null, is_private: false, token });
+            if (res.success) {
+                playSound('success');
+                alert(`✅ ODA OLUŞTURULDU! KOD: ${res.room_code} ${pass ? '🔒 Şifreli' : ''}`);
+                await joinRoomByCode(res.room_code, pass);
+                document.getElementById('newRoomName').value = '';
+                document.getElementById('newRoomPass').value = '';
+            } else { 
+                playSound('error');
+                alert("❌ Başarısız: " + (res.error || "Bilinmeyen hata")); 
+            }
+        }
+
+        async function joinRoomByCode(roomCode, roomPass) {
+            const res = await apiCall('/join_room', { username: currentUser, room_code: roomCode, room_password: roomPass, token });
+            if (res.success) {
+                currentRoom = roomCode;
+                document.getElementById('roomStatus').innerHTML = `🔷 AKTİF ODA: ${currentRoom} | 🔒 ŞİFRELİ 🔷`;
+                document.getElementById('roomListContainer').style.display = 'none';
+                await loadMessages();
+                await updateUserRoleBadge();
+                playSound('success');
+                alert(`🎉 Odaya katıldınız: ${roomCode}`);
+            } else { 
+                playSound('error');
+                alert("❌ " + (res.error || "Oda bulunamadı veya şifre hatalı")); 
+            }
+        }
+
+        async function leaveRoom() {
+            if (!currentRoom) { alert("Bir odada değilsiniz!"); return; }
+            const res = await apiCall('/leave_room', { username: currentUser, token });
+            if (res.success) {
+                currentRoom = null;
+                document.getElementById('roomStatus').innerHTML = "⚡ ODDAN AYRILDINIZ - KATILIN VEYA OLUŞTURUN ⚡";
+                document.getElementById('chatMessages').innerHTML = '<div class="message"><span class="msg-time">[SYS]</span><span class="msg-text">Odadan ayrıldınız.</span></div>';
+                playSound('login');
+            }
+        }
+
+        async function deleteRoom(roomCode) {
+            if (!confirm(`"${roomCode}" odasını sil? Bu işlem GERİ ALINAMAZ!`)) return;
+            const res = await apiCall('/delete_room', { username: currentUser, room_code: roomCode, token });
+            if (res.success) {
+                playSound('success');
+                alert(`✅ ${roomCode} silindi!`);
+                if (currentRoom === roomCode) {
+                    currentRoom = null;
+                    document.getElementById('roomStatus').innerHTML = "⚡ ODA SİLİNDİ - KATILIN VEYA OLUŞTURUN ⚡";
+                    document.getElementById('chatMessages').innerHTML = '<div class="message"><span class="msg-time">[SYS]</span><span class="msg-text">Oda silindi.</span></div>';
+                }
+                await listAllRooms();
+            } else { 
+                playSound('error');
+                alert("❌ " + (res.error || "Yetkiniz yok")); 
+            }
+        }
+
+        async function listAllRooms() {
+            const rooms = await apiCall('/list_rooms', { token, username: currentUser });
+            const container = document.getElementById('roomListContainer');
+            if (!rooms.length) { 
+                container.innerHTML = "<div class='room-item'>📭 Oda yok. Bir tane oluşturun!</div>";
+            } else {
+                container.innerHTML = "<strong>📡 KULLANILABİLİR ODALAR:</strong><br>";
+                rooms.forEach(r => {
+                    const isOwner = (r.created_by === currentUser);
+                    container.innerHTML += `
+                        <div class='room-item'>
+                            <div class='room-info' onclick="joinRoomByCode('${r.room_code}', prompt('Şifre girin:', ''))">
+                                🔓 <strong>${r.room_code}</strong> — ${r.room_name} ${r.is_locked ? '🔒' : ''} 
+                                <span style="float:right;">👥 ${r.users_count || 0}/${r.total_users || 0}</span>
+                            </div>
+                            ${isOwner ? `<button class="delete-btn" onclick="deleteRoom('${r.room_code}')">🗑️ SİL</button>` : ''}
+                        </div>
+                    `;
+                });
+            }
+            container.style.display = 'block';
+        }
+
+        let lastMsgCount = 0;
+        async function loadMessages() {
+            if (!currentRoom || !currentUser) return;
+            const msgs = await apiCall('/messages', { username: currentUser, token });
+            if (msgs.length > lastMsgCount && lastMsgCount !== 0) playSound('receive');
+            lastMsgCount = msgs.length;
+            const box = document.getElementById('chatMessages');
+            if (!msgs.length) {
+                box.innerHTML = '<div class="message"><span class="msg-time">[SYS]</span><span class="msg-text">💬 Henüz mesaj yok. Sohbeti başlatın!</span></div>';
+            } else {
+                box.innerHTML = msgs.map(m => {
+                    const roleBadge = m.role ? `<span class="msg-role-badge">${m.role}</span>` : '';
+                    return `
+                        <div class="message">
+                            <span class="msg-time">[${new Date(m.timestamp).toLocaleTimeString()}]</span>
+                            <span class="msg-user" onclick="event.stopPropagation(); showUserProfileCard('${escapeHtml(m.from_user)}', event.clientX, event.clientY)">@${escapeHtml(m.from_user)}</span>
+                            ${roleBadge}
+                            <span class="msg-text">: ${escapeHtml(m.message)}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+            box.scrollTop = box.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const msg = document.getElementById('messageInput').value.trim();
+            if (!msg) return;
+            if (!currentRoom) { playSound('error'); alert("❌ Önce bir odaya katılın!"); return; }
+            const res = await apiCall('/send', { from: currentUser, message: msg, token });
+            if (res.success) {
+                document.getElementById('messageInput').value = '';
+                playSound('send');
+                await loadMessages();
+            } else { 
+                playSound('error');
+                alert("❌ Gönderilemedi: " + (res.error || "Hata")); 
+            }
+        }
+
+        async function logoutUser() {
+            await apiCall('/logout', { username: currentUser, token });
+            if (msgInterval) clearInterval(msgInterval);
+            currentUser = null; token = null; currentRoom = null;
+            document.getElementById('loginPanel').style.display = 'block';
+            document.getElementById('chatPanel').style.display = 'none';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            lastMsgCount = 0;
+            playSound('login');
+        }
+
+        function escapeHtml(str) { 
+            if (!str) return '';
+            return str.replace(/[&<>]/g, m => { 
+                if (m === '&') return '&amp;'; 
+                if (m === '<') return '&lt;'; 
+                if (m === '>') return '&gt;'; 
+                return m; 
+            }); 
+        }
+
+        // Button bindings
+        document.getElementById('createRoomBtn').onclick = createRoom;
+        document.getElementById('joinRoomBtn').onclick = () => {
+            const code = document.getElementById('joinRoomCode').value.trim().toUpperCase();
+            const pass = document.getElementById('joinRoomPass').value;
+            if (!code) { playSound('error'); alert("❌ Oda kodunu girin!"); return; }
+            joinRoomByCode(code, pass);
+            document.getElementById('joinRoomCode').value = '';
+            document.getElementById('joinRoomPass').value = '';
+        };
+        document.getElementById('listRoomsBtn').onclick = listAllRooms;
+        document.getElementById('sendMsgBtn').onclick = sendMessage;
+        document.getElementById('logoutBtn').onclick = logoutUser;
+        document.getElementById('leaveRoomBtn').onclick = leaveRoom;
+        document.getElementById('messageInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+        window.joinRoomByCode = joinRoomByCode;
+        window.deleteRoom = deleteRoom;
+        window.showUserProfileCard = showUserProfileCard;
+        window.closeProfileCard = closeProfileCard;
+    </script>
+</body>
+</html>
